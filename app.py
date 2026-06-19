@@ -4,16 +4,26 @@ from agents.topic_discovery import discover_topics
 from agents.post_writer import create_post
 from agents.research.hackernews import get_hackernews_top_stories
 from agents.research.topic_analyzer import analyze_trends
+from graphs.workflow import graph
 
-stories = get_hackernews_top_stories()
-analysis = analyze_trends(stories)
-for topic in analysis.topics:
-    print(f"Title: {topic.Title}")
-    print(f"Reason: {topic.Reason}")
-    print(f"Description: {topic.description}")
-    print(f"Popularity: {topic.Popularity}")
-    print(f"Score: {topic.score}")
-    print("-" * 40)
+result = graph.invoke({})
+
+print(result["selected_topic"])
+print("\n Generated LinkedIn Post on topic:\n")
+print(result["post"])
+print("\n Process completed.")
+print (result.keys())
+
+
+# stories = get_hackernews_top_stories()
+# analysis = analyze_trends(stories)
+# for topic in analysis.topics:
+#     print(f"Title: {topic.Title}")
+#     print(f"Reason: {topic.Reason}")
+#     print(f"Description: {topic.description}")
+#     print(f"Popularity: {topic.Popularity}")
+#     print(f"Score: {topic.score}")
+#     print("-" * 40)
 # news = get_hackernews_top_stories()
 # print("Top Hacker News Stories:")
 # for idx, story in enumerate(news, 1):
