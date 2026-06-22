@@ -5,3 +5,4 @@ class WorkflowState(TypedDict):
     topics: list
     selected_topic: str
     post: str
+    approved: bool

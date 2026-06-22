@@ -16,10 +16,29 @@ def topics_agent_node(state):
     }
 
 def writer_agent_node(state):
-    selected_topic = state["topics"].topics[0]
+    selected_topic = state["selected_topic"]
     post = create_post(selected_topic.Title)
 
     return {
         "selected_topic": selected_topic.Title,
         "post": post
+    }
+
+def approval_node(state):
+    topics = state["topics"]
+    print("Select the topic you want to write about:")
+    for i, topic in enumerate(topics):
+        print(f"{i + 1}. {topic.Title}")
+    choice = int(input("Enter your choice (Press 0 to Reject) : "))
+
+    if choice == 0:
+        return {
+            "approved": False
+        }
+
+    selected_topic = topics[choice - 1]
+
+    return {
+        "selected_topic": selected_topic.Title,
+        "approved": True
     }
