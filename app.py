@@ -11,7 +11,7 @@ def main():
 
     result = graph.invoke({})
 
-    print(result["selected_topic"])
+    print(result["selected_story"])
     print("\nGenerated LinkedIn post on topic:\n")
     print(result["post"])
     print("\nProcess completed.")

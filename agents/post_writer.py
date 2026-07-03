@@ -1,6 +1,9 @@
 from langchain_ollama import ChatOllama
 
+from models.article_format import ArticleFormat
+
 llm = ChatOllama(model="qwen3:4b")
+structured_llm = llm.with_structured_output(ArticleFormat)
 
 def create_post(topic):
     prompt = """You are a respected software architect.
