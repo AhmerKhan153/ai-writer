@@ -6,6 +6,5 @@ class ArticleFormat(BaseModel):
     key_takeaways: str
     technologies: str
     problems_solved: list[str]
-    trade-offs: list[str]
     interesting_quotes: list[str]
     potential_discussion_topics: list[str]

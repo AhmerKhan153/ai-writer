@@ -6,9 +6,9 @@ llm = ChatOllama(model="qwen3:4b")
 structured_llm = llm.with_structured_output(ArticleFormat)
 
 def create_post(topic):
-    prompt = """You are a respected software architect.
+    prompt = """You are a respected software architect, writer, blogger, podcaster.
 
-    Create a LinkedIn post.
+    Create a Knwoledge base.
 
     Topic: {topic}
 
@@ -23,5 +23,5 @@ def create_post(topic):
     - Do not use words like 'dive into,' 'delve,', 'The Truth?' or 'tapestry'"
     - Include discussion question at the end."""
 
-    response = llm.invoke(prompt.format(topic=topic))
-    return response.content
+    response = structured_llm.invoke(prompt.format(topic=topic))
+    return response

@@ -45,8 +45,8 @@ def approval_node(state):
 
 def article_fetcher_node(state):
     selected_story = state["selected_story"]
-    articlehtml = fetch_article(selected_story.get("url"))
-    return {"article": { "title": selected_story.get("title"), "url": selected_story.get("url"), "articlehtml": articlehtml }}
+    article_structured = fetch_article(selected_story.get("url"))
+    return {"article": { "title": selected_story.get("title"), "url": selected_story.get("url"), "articlehtml": article_structured }}
 
 
 def writer_agent_node(state):
