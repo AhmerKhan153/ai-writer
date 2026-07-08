@@ -1,6 +1,6 @@
 from langchain_ollama import ChatOllama
-
 from models.article_format import ArticleFormat
+from output.save import save_db
 
 llm = ChatOllama(model="qwen3:4b")
 structured_llm = llm.with_structured_output(ArticleFormat)
@@ -24,4 +24,5 @@ def create_post(topic):
     - Include discussion question at the end."""
 
     response = structured_llm.invoke(prompt.format(topic=topic))
+    resp = save_db(response)  # Save the response to the database
     return response
