@@ -1,0 +1,1 @@
+"""Reddit ingestion adapter package."""

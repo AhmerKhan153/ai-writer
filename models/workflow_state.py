@@ -6,5 +6,9 @@ class WorkflowState(TypedDict, total=False):
     topics: list
     selected_story: dict
     article: dict
+    prompt: str
+    draft: dict
+    review_result: dict
+    published: dict
     post: str
     approved: bool

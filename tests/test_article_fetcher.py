@@ -1,4 +1,4 @@
-from agents.article_fetcher import clean_html_to_text
+from src.processing.fetcher.fetcher import clean_html_to_text
 
 
 def test_clean_html_to_text_ignores_noise_and_keeps_title_and_body():

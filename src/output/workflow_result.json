@@ -1,0 +1,23 @@
+{
+  "published": true,
+  "review_result": {
+    "approved": true,
+    "draft": {
+      "Description": "Concise knowledge base entry for 'Prefer strict tables in SQLite' with specified constraints",
+      "key_takeaways": "Contrarian perspective on SQLite schema design emphasizing data integrity over flexibility",
+      "technologies": "SQLite",
+      "problems_solved": [
+        "Schema inconsistencies",
+        "Orphaned records",
+        "Data corruption risks"
+      ],
+      "interesting_quotes": [
+        "SQLite’s reputation for simplicity often masks the cost of loose schemas",
+        "Strict tables aren’t about rigidity—they’re about preventing the kind of data errors that cost hours to fix"
+      ],
+      "potential_discussion_topics": [
+        "How might strict constraints impact your migration strategy when transitioning from loose schemas?"
+      ]
+    }
+  }
+}

@@ -1,0 +1,1 @@
+"""HackerNews ingestion adapters."""

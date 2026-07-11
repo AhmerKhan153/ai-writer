@@ -1,7 +1,14 @@
 import argparse
+import sys
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parent
+SRC_DIR = ROOT_DIR / "src"
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
 
 from graphs.workflow import graph
-from output.save import save_json
+from shared.save import save_json
 
 
 def main():
@@ -9,11 +16,11 @@ def main():
     parser.add_argument("--save", action="store_true", help="Save workflow output to output/workflow_result.json")
     args = parser.parse_args()
 
-    result = graph.invoke({})
+    result = graph.invoke({"provider": "hackernews"})
 
-    print(result["selected_story"])
+    print(result.get("selected_story"))
     print("\nGenerated LinkedIn post on topic:\n")
-    print(result["post"])
+    print(result.get("published") or result.get("post"))
     print("\nProcess completed.")
 
     if args.save:
