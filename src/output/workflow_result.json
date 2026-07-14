@@ -3,20 +3,23 @@
   "review_result": {
     "approved": true,
     "draft": {
-      "Description": "Concise knowledge base entry for 'Prefer strict tables in SQLite' with specified constraints",
-      "key_takeaways": "Contrarian perspective on SQLite schema design emphasizing data integrity over flexibility",
-      "technologies": "SQLite",
+      "Description": "This concise topic summary addresses the practical challenges of measuring input latency on Linux, challenging common assumptions about X11 and Wayland performance. It highlights how VRR (Variable Refresh Rate) can introduce unexpected delays in high-refresh displays and how DXVK—while crucial for DirectX compatibility—may obscure true latency metrics. The summary avoids technical jargon, emphasizing real-world measurement pitfalls rather than theoretical comparisons. It argues that X11 often shows lower latency than Wayland in gaming scenarios due to simpler input path handling, contrary to popular claims that Wayland is inherently faster. The piece stresses that VRR implementations vary wildly across hardware and drivers, and DXVK’s translation overhead can inflate latency readings if not properly accounted for. This is critical for gamers and developers needing accurate input feedback. When does real-world input lag become a problem for your workflow?",
+      "key_takeaways": "X11 typically has lower input latency than Wayland in gaming contexts\nVRR adds variable latency depending on hardware and driver quality\nDXVK translation can mask true latency metrics\nReal-world measurement requires hardware-specific calibration",
+      "technologies": "X11, Wayland, VRR, DXVK, input latency measurement",
       "problems_solved": [
-        "Schema inconsistencies",
-        "Orphaned records",
-        "Data corruption risks"
+        "Accurate input latency measurement on Linux",
+        "Understanding X11 vs Wayland latency differences",
+        "VRR impact on input timing",
+        "DXVK’s role in latency measurement"
       ],
       "interesting_quotes": [
-        "SQLite’s reputation for simplicity often masks the cost of loose schemas",
-        "Strict tables aren’t about rigidity—they’re about preventing the kind of data errors that cost hours to fix"
+        "X11’s simpler input path often results in lower latency than Wayland in practice",
+        "VRR can add 10-30ms of latency depending on display and driver implementation",
+        "DXVK’s translation overhead may inflate latency readings if not properly calibrated"
       ],
       "potential_discussion_topics": [
-        "How might strict constraints impact your migration strategy when transitioning from loose schemas?"
+        "How should developers prioritize latency measurement tools when hardware varies?",
+        "When does real-world input lag become a problem for your workflow?"
       ]
     }
   }

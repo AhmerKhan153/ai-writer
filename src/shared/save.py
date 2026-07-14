@@ -16,7 +16,11 @@ def save_json(data: Any, filename: str = "workflow_result.json") -> Path:
 
 
 def save_db(data: Any) -> Any:
-    collection = db["articles"]
-    final_document = {**data.dict()} if hasattr(data, "dict") else {**data}
-    collection.insert_one(final_document)
-    return data
+    try:
+        collection = db["articles"]
+        final_document = {**data.dict()} if hasattr(data, "dict") else {**data}
+        collection.insert_one(final_document)
+        return data
+    except Exception as e:
+        print(f"Error saving to database: {e}")
+        raise

@@ -1,13 +1,15 @@
 import json
 from pathlib import Path
 from typing import Any
-from pymongo import MongoClient 
+from pymongo import MongoClient
+from datetime import datetime
 
 OUTPUT_DIR = Path(__file__).resolve().parent
 client = MongoClient("mongodb://localhost:27017/")
 db = client["KnowledgeExtractor"]
 default_values = {
     "is_processed": False,
+    "date": datetime.now(),
 }
 
 

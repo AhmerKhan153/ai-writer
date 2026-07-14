@@ -1,0 +1,11 @@
+{
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.py[cod]": true,
+    "**/__init__.py": true
+  },
+  "search.exclude": {
+    "**/__pycache__": true,
+    "**/*.py[cod]": true
+  }
+}
