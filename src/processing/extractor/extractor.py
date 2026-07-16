@@ -1,5 +1,7 @@
 from typing import Dict, Any
 
+from config import TOPIC_EXTRACTION_PROMPT_TEMPLATE
+
 
 class TopicExtractor:
     """Standalone node that extracts a text prompt from cleaned article content."""
@@ -10,5 +12,5 @@ class TopicExtractor:
 
         title = cleaned_article.get("title") or ""
         content = cleaned_article.get("content") or ""
-        prompt = f"Write a concise topic summary for the article titled '{title}'.\n\n{content}"
+        prompt = TOPIC_EXTRACTION_PROMPT_TEMPLATE.format(title=title, content=content)
         return prompt.strip()
