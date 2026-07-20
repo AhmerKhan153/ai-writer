@@ -1,2 +1,0 @@
-docker compose -f /mnt/c/Users/ahmer/containers/openclaw/docker-compose.yml logs -f openclaw-gateway
-  docker compose -f /mnt/c/Users/ahmer/containers/openclaw/docker-compose.yml exec openclaw-gateway sh -lc 'node dist/index.js health --token "$OPENCLAW_GATEWAY_TOKEN"'

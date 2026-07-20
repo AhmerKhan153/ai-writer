@@ -1,4 +1,7 @@
 from datetime import datetime
+import os
+
+from dotenv import load_dotenv
 
 DEFAULT_LLM_MODEL = "qwen3:4b"
 MONGODB_URI = "mongodb://localhost:27017/"
@@ -8,6 +11,11 @@ DEFAULT_VALUES = {
     "is_processed": False,
     "date": datetime.now(),
 }
+
+load_dotenv()
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN") or os.getenv("BOT_TOKEN")
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID") or os.getenv("CHAT_ID")
+BOT_TOKEN = TELEGRAM_BOT_TOKEN
 
 POST_WRITING_PROMPT_TEMPLATE = """You are a respected software architect, writer, blogger, podcaster.
 

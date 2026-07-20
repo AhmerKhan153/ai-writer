@@ -6,6 +6,8 @@ SRC_DIR = ROOT_DIR / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
+import asyncio
+
 from processing.fetcher.fetcher import fetch_article
 from ingestion.provider_registry import registry
 from ingestion.reddit.reddit_provider import RedditProvider
@@ -17,6 +19,12 @@ from workflow.topic_generation.topic_analyzer import analyze_trends
 from workflow.writing.writing import WritingWorkflow
 from workflow.reviewing.reviewing import ReviewingWorkflow
 from workflow.publishing.publishing import PublishingWorkflow
+from integration.telegram_bot import send_draft, send_story_selection
+from integration.telegram_state import (
+    create_pending_selection,
+    get_pending_selection,
+    set_selected_story,
+)
 
 
 def register_providers() -> None:
@@ -52,25 +60,29 @@ def approval_node(state):
         print("No stories were generated to approve.")
         return {"selected_story": {"approved": False}}
 
-    print("Select the story you want to write about:")
-    for index, story in enumerate(stories, start=1):
-        title = getattr(story, "Title", None)
-        if title is None and isinstance(story, dict):
-            title = story.get("Title") or story.get("title")
-        print(f"{index}. {title or str(story)}")
+    pending = get_pending_selection()
+    if pending is None:
+        pending = create_pending_selection(stories)
+        options = []
+        for index, story in enumerate(stories, start=1):
+            title = getattr(story, "Title", None)
+            if title is None and isinstance(story, dict):
+                title = story.get("Title") or story.get("title")
+            options.append(f"{index}. {title or str(story)}")
 
-    try:
-        choice = int(input("Enter your choice (Press 0 to reject): ").strip())
-    except ValueError:
-        return {"selected_story": {"approved": False}}
+        try:
+            asyncio.get_running_loop().create_task(
+                send_story_selection(stories)
+            )
+        except RuntimeError:
+            asyncio.run(send_story_selection(stories))
 
-    if choice <= 0 or choice > len(stories):
-        return {"selected_story": {"approved": False}}
+    if pending.selected_story is None:
+        return {"selected_story": {"approved": False, "pending_selection": True, "stories": stories}}
 
-    selected_story = stories[choice - 1]
-    title = selected_story.get("Title") or selected_story.get("title")
-    url = selected_story.get("url") or selected_story.get("URL")
-
+    selected_story = pending.selected_story
+    title = selected_story.get("title")
+    url = selected_story.get("url")
     return {"selected_story": {"approved": True, "title": title, "url": url}}
 
 
