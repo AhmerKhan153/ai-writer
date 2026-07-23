@@ -1,63 +1,60 @@
+"""Telegram callback dispatch — the human-in-the-loop orchestrator.
+
+Callback data is "<action>:<draft_id>". Each action does one chunk of work using
+the Mongo record identified by draft_id, then stops:
+
+    pick     -> run fetch->write subgraph, store draft, send it for approval
+    approve  -> mark approved (publish job will post it)
+    reject   -> mark rejected
+    rewrite  -> regenerate the draft from a different angle, resend
+"""
+
+import asyncio
+
 from telegram import Update
 from telegram.ext import ContextTypes
 
+from workflow.content_graph import generate_draft
+from integration.telegram_bot import send_draft
+from repository import draft_repository
+from config import STATUS_APPROVED, STATUS_REJECTED
 
-async def callback_handler(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE,
-):
 
+async def _draft_and_send(draft_id: str, title: str, url: str, is_rewrite: bool) -> None:
+    """Generate a draft off the event loop, persist it, and send it for review."""
+    draft = await asyncio.to_thread(generate_draft, title, url, is_rewrite)
+    await asyncio.to_thread(draft_repository.attach_draft, draft_id, draft)
+    await send_draft(draft_id, draft)
+
+
+async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
-
     await query.answer()
 
-    if not query.data:
+    if not query.data or ":" not in query.data:
         return
 
-    action, post_id = query.data.split(":", 1)
+    action, draft_id = query.data.split(":", 1)
+    record = draft_repository.get(draft_id)
+    if record is None:
+        await query.edit_message_text("This item is no longer available.")
+        return
 
-    if action == "approve":
+    if action == "pick":
+        title = record.get("title") or ""
+        await query.edit_message_text(f"✅ Selected: {title}\n\nWriting a draft...")
+        await _draft_and_send(draft_id, title, record.get("url"), is_rewrite=False)
 
-        print(f"Publishing {post_id}")
-
-        await query.edit_message_text(
-            f"✅ Post {post_id} published."
-        )
+    elif action == "approve":
+        draft_repository.set_status(draft_id, STATUS_APPROVED)
+        await query.edit_message_text("✅ Approved — queued for LinkedIn.")
 
     elif action == "reject":
-
-        print(f"Rejected {post_id}")
-
-        await query.edit_message_text(
-            f"❌ Post {post_id} rejected."
-        )
+        draft_repository.set_status(draft_id, STATUS_REJECTED)
+        await query.edit_message_text("❌ Rejected.")
 
     elif action == "rewrite":
-
-        print(f"Rewrite {post_id}")
-
-        await query.edit_message_text(
-            f"✍️ Rewriting post {post_id}..."
+        await query.edit_message_text("✍️ Rewriting from a different angle...")
+        await _draft_and_send(
+            draft_id, record.get("title") or "", record.get("url"), is_rewrite=True
         )
-
-    elif action == "story_select":
-        choice = int(post_id)
-        from integration.telegram_state import get_pending_selection, set_selected_story
-
-        pending = get_pending_selection()
-        stories = pending.stories if pending is not None else []
-        if 0 < choice <= len(stories):
-            selected_story = stories[choice - 1]
-            if isinstance(selected_story, dict):
-                title = selected_story.get("Title") or selected_story.get("title")
-                url = selected_story.get("url") or selected_story.get("URL")
-            else:
-                title = getattr(selected_story, "Title", None) or str(selected_story)
-                url = getattr(selected_story, "url", None) or getattr(selected_story, "URL", None)
-            await query.edit_message_text(
-                f"✅ Selected: {title}\n\nProceeding with the workflow..."
-            )
-            set_selected_story({"approved": True, "title": title, "url": url})
-        else:
-            await query.edit_message_text("❌ Selection cancelled.")
-            set_selected_story({"approved": False})

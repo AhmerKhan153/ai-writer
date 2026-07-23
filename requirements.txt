@@ -1,5 +1,10 @@
 pytest
 requests
-langchain-ollama
 pydantic
 pymongo
+python-dotenv
+langgraph
+langchain-ollama
+langchain-anthropic
+python-telegram-bot
+apscheduler
